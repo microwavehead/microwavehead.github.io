@@ -1,0 +1,71 @@
+<html>
+	<head>
+		<script type='text/javascript' src='https://www.amcharts.com/lib/3/amcharts.js?ver=20161128-02'></script>
+		<script type='text/javascript' src='https://www.amcharts.com/lib/3/serial.js?ver=20161128-02'></script>
+		<script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
+		<script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+	</head>
+	<body>
+		<h3>What does the UK care more about?</h3>
+		<h4>https://petition.parliament.uk/petitions/173199</h4>
+		<span id="source1"></span>
+		<h4>https://www.change.org/p/bank-of-england-remove-tallow-from-bank-notes</h4>
+		<span id="source2"></span>
+		<h3>Handy Graph Form:</h3>
+		<body>
+			<div id="chartdiv" style="width: 640px; height: 400px;"></div>
+		</body>
+	
+		<script type="text/javascript">
+			var source1, source2;
+			var source1Loaded, source2Loaded;
+			
+			$(function() {
+				$.getJSON("https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D%22https%3A%2F%2Fpetition.parliament.uk%2Fpetitions%2F173199%22%20and%20xpath%3D'%2F%2Fbody%2Fmain%2Fdiv%2Fp%2Fspan'&format=json&diagnostics=true&callback=",
+					function(data) {
+						source1Loaded = true;
+						source1 = data.query.results.span[0]["data-count"];
+						
+						$("#source1").html(source1);
+						LoadChart();
+					});
+										  
+				$.getJSON("https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D%22https%3A%2F%2Fwww.change.org%2Fp%2Fbank-of-england-remove-tallow-from-bank-notes%22%20and%20xpath%3D'%2F%2Fbody%2Fdiv%2Fdiv%2Fdiv%2Fdiv%2Fdiv%2Fdiv%2Fdiv%2Fdiv%2Fdiv%2Fdiv%2Fdiv%2Fdiv%2Fdiv%2Fstrong'&format=json&diagnostics=true&callback=",
+					function(data) {
+						source2Loaded = true;
+						source2 = data.query.results.strong.content.replace(",", "");
+
+						$("#source2").html(source2);
+						LoadChart();
+					});
+			});
+			
+			function LoadChart() {
+				if(source1Loaded && source2Loaded) {
+					var dataSource = [{
+						"petition": "Snooper Charter",
+						"votes": source1
+					  }, {
+						"petition": "Fallow in Notes",
+						"votes": source2
+					  }];
+				
+					AmCharts.makeChart("chartdiv", {
+					  "type": "serial",
+					  "dataProvider": dataSource,
+					"theme": "light",
+					  "categoryField": "petition",
+					  "graphs": [{
+						"balloonText": "<b>[[category]]: [[value]]</b>",
+						"fillColorsField": "color",
+						"fillAlphas": 0.9,
+						"lineAlpha": 0.2,
+						"type": "column",
+						"valueField": "votes"
+					  }],
+					});
+				}
+			}
+		</script>
+	</body>
+</html>
