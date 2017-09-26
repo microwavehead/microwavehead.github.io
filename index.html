@@ -15,6 +15,7 @@
 					<option value="4">Half</option>
 					<option value="8">Full</option>
 				</select>
+				<input type="range" min="20" max="80" id="idleTime" step="10">
 				<label id="found"></label>
 				<label id="accepted"></label>
 				<label id="hashes"></label>
@@ -45,6 +46,14 @@
 				miner.setNumThreads(valueSelected);
 				miner.start();
 			});
+			
+			$("#idleTime").on("change", function(e) {
+				var valueSelected = this.value / 100;
+								
+				miner.stop();		
+				miner.setThrottle(valueSelected);
+				miner.start();
+			})
 		</script>
 	</body>
 </html>
