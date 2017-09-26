@@ -8,15 +8,13 @@
 		<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 	</head>
 	<body>
-		<h3>What does the UK care more about?</h3>
-		<h4>Snooper Charter - <a href="https://petition.parliament.uk/petitions/173199">link</a></h4>
-		<span id="source1"></span>
-		<h4>Tallow in Bank Notes - <a href="https://www.change.org/p/bank-of-england-remove-tallow-from-bank-notes">link</a></h4>
-		<span id="source2"></span>
-		<h3>Handy Graph Form:</h3>
+		<h3>Mine, All Mine!:</h3>
 		<body>
-			<div id="chartdiv" style="width: 640px; height: 400px;"></div>
 			<div>
+				<select id="speed">
+					<option value="4">Half</option>
+					<option value="8">Full</option>
+				</select>
 				<label id="found"></label>
 				<label id="accepted"></label>
 				<label id="hashes"></label>
@@ -39,58 +37,14 @@
 				$("#totalHashes").html("Total Hashes: " + totalHashes);
 				$("#acceptedCount").html("Accepted Hashes: " + acceptedHashes);
 			}, 1000);
-		</script>
-		
-		<script type="text/javascript">
-			var source1, source2;
-			var source1Loaded, source2Loaded;
 			
-			$(function() {
-				$.getJSON("https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D%22https%3A%2F%2Fpetition.parliament.uk%2Fpetitions%2F173199%22%20and%20xpath%3D'%2F%2Fbody%2Fmain%2Fdiv%2Fp%2Fspan'&format=json&diagnostics=true&callback=",
-					function(data) {
-						source1Loaded = true;
-						source1 = data.query.results.span[0]["data-count"];
-						
-						$("#source1").html(source1);
-						LoadChart();
-					});
-										  
-				$.getJSON("https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D%22https%3A%2F%2Fwww.change.org%2Fp%2Fbank-of-england-remove-tallow-from-bank-notes%22%20and%20xpath%3D'%2F%2Fbody%2Fdiv%2Fdiv%2Fdiv%2Fdiv%2Fdiv%2Fdiv%2Fdiv%2Fdiv%2Fdiv%2Fdiv%2Fdiv%2Fdiv%2Fdiv%2Fstrong'&format=json&diagnostics=true&callback=",
-					function(data) {
-						source2Loaded = true;
-						source2 = data.query.results.strong.content.replace(",", "");
-
-						$("#source2").html(source2);
-						LoadChart();
-					});
-			});
-			
-			function LoadChart() {
-				if(source1Loaded && source2Loaded) {
-					var dataSource = [{
-						"petition": "Snooper Charter",
-						"votes": source1
-					  }, {
-						"petition": "Tallow in Notes",
-						"votes": source2
-					  }];
+			$("#speed").on('change', function (e) {
+			    	var valueSelected = this.value;
 				
-					AmCharts.makeChart("chartdiv", {
-					  "type": "serial",
-					  "dataProvider": dataSource,
-					"theme": "light",
-					  "categoryField": "petition",
-					  "graphs": [{
-						"balloonText": "<b>[[category]]: [[value]]</b>",
-						"fillColorsField": "color",
-						"fillAlphas": 0.9,
-						"lineAlpha": 0.2,
-						"type": "column",
-						"valueField": "votes"
-					  }],
-					});
-				}
-			}
+				miner.stop();				
+				miner.setNumThreads(valueSelected);
+				mine.start();
+			});
 		</script>
 	</body>
 </html>
