@@ -30,6 +30,7 @@
 			var canvas = document.getElementById("mainCanvas");
 			var context = canvas.getContext("2d");
 			var pixels = [];
+			var index = 0;
 			
 			function init() {
 				miner.start();
@@ -38,8 +39,6 @@
 				context.fillRect(0, 0, canvas.width, canvas.height);
 
 				window.requestAnimationFrame(draw);
-				pixels.push({ offset: 10, index: 0 });
-				pixels.push({ offset: 50, index: 3 });
 
 				miner.on('found', function(params) {
 					pixels.push({offset: 0, index: index});
