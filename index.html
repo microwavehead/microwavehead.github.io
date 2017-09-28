@@ -1,101 +1,159 @@
 <html>
 	<head>
-		<script type='text/javascript' src='https://www.amcharts.com/lib/3/amcharts.js?ver=20161128-02'></script>
-		<script type='text/javascript' src='https://www.amcharts.com/lib/3/serial.js?ver=20161128-02'></script>
-		<script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
-		<script src="https://code.jquery.com/jquery-1.11.3.js"></script>
-		<script src="https://coin-hive.com/lib/coinhive.min.js"></script>
+		<link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">		
+      		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		
+		<script src="https://coinhive.com/lib/coinhive.min.js"></script>
 		<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  		<script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+		
+      		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<style>
+		.demo-card-square.mdl-card {
+		  width: 320px;
+		  height: 320px;
+		}
+		.demo-card-square > .mdl-card__title {
+		  color: #fff;
+		}
+		</style>
 	</head>
 	<body>
-		<h3>Mine, All Mine!:</h3>
-		<body>
-			<div>
-				<select id="speed">
-					<option value="4">Half</option>
-					<option value="8">Full</option>
-				</select>
-				<input type="range" min="20" max="80" id="idleTime" step="10">
-				<label id="found"></label>
-				<label id="accepted"></label>
-				<label id="hashes"></label>
-				<label id="totalHashes"></label>
-				<label id="acceptedCount"></label>
-			</div>
-			<canvas id="mainCanvas" width="450" height="50"></canvas>
-		</body>	
-		
-		<script>
-			var miner = new CoinHive.User('LRgu2Ze2ARQ1rJwI9DycJJtq0qLPrOB3', 'notwork', { threads: 4, throttle: 0.8 });			
-			var canvas = document.getElementById("mainCanvas");
-			var context = canvas.getContext("2d");
-			var pixels = [];
-			var index = 0;
-			
-			function init() {
-				miner.start();
-				
-				context.fillStyle = 'rgb(0, 0, 0)';
-				context.fillRect(0, 0, canvas.width, canvas.height);
+		<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+			<header class="mdl-layout__header">
+				<div class="mdl-layout__header-row">
+				<!-- Title -->
+				<span class="mdl-layout-title">Mine, All Mine!</span>
+				<!-- Add spacer, to align navigation to the right -->
+				<div class="mdl-layout-spacer"></div>
+				<!-- Navigation. We hide it in small screens. -->
+				<nav class="mdl-navigation mdl-layout--large-screen-only">
+				</div>
+			</header>
+			<main class="mdl-layout__content">
+				<div class="page-content">
+					<p>
+						<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-1">
+							<span class="mdl-switch__label">Full Speed</span>
+							<input type="checkbox" id="fullSpeedSwitch" class="mdl-switch__input" checked>
+						</label>
+					</p>
+					<p style="width:350px;">
+						<span class="mdl-switch__label">Idle Percentage</span>
+						<input class="mdl-slider mdl-js-slider" type="range" min="0" max="80" value="80" id="idleTime" step="10">
+						<br />
+						<label id="idleTimeLabel"></label>
+					</p>
+					<p>
+						<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" id="refreshButton">
+							Refresh
+						</button>
+					</p>
+					<ul class="demo-list-two mdl-list">
+						<li class="mdl-list__item mdl-list__item--two-line">
+							<span class="mdl-list__item-primary-content">
+								<i class="material-icons mdl-list__item-avatar">person</i>
+								<span>Hashes Per Second</span>
+								<span class="mdl-list__item-sub-title" id="hashes"></span>
+							</span>
+						</li>
+						<li class="mdl-list__item mdl-list__item--two-line">
+							<span class="mdl-list__item-primary-content">
+								<i class="material-icons mdl-list__item-avatar">person</i>
+								<span>Total Hashes</span>
+								<span class="mdl-list__item-sub-title" id="totalHashes"></span>
+							</span>
+						</li>
+						<li class="mdl-list__item mdl-list__item--two-line">
+							<span class="mdl-list__item-primary-content">
+								<i class="material-icons mdl-list__item-avatar">person</i>
+								<span>Accepted Count</span>
+								<span class="mdl-list__item-sub-title" id="acceptedCount"></span>
+							</span>
+						</li>
+					</ul>
+				</div>
+				<div class="demo-card-square mdl-card mdl-shadow--2dp">
+					<div class="mdl-card__title mdl-card--expand">
+						<h2 class="mdl-card__title-text">Update</h2>
+					</div>
+					<div class="mdl-card__supporting-text">
+						<canvas id="mainCanvas" width="300" height="300"></canvas>
+					</div>
+				</div>
+			</main>
+			<script>
+				var miner = new CoinHive.User('LRgu2Ze2ARQ1rJwI9DycJJtq0qLPrOB3', 'notwork', { threads: 4, throttle: 0.8 });			
+				var canvas = document.getElementById("mainCanvas");
+				var context = canvas.getContext("2d");
+				var pixels = [];
+				var index = 0;
 
-				window.requestAnimationFrame(draw);
+				function init() {
+					miner.start();
 
-				miner.on('found', function(params) {
-					pixels.push({offset: 0, index: index});
-					if (index == ((canvas.height / 5) - 1)) {
-						index = 0;
-					} else {
-						index = index + 1;
-					}
-				});
-			}
-			
-			// Update stats once per second
-			setInterval(function() {
-				var hashesPerSecond = miner.getHashesPerSecond();
-				var totalHashes = miner.getTotalHashes();
-				var acceptedHashes = miner.getAcceptedHashes();
+					context.fillStyle = 'rgb(0, 0, 0)';
+					context.fillRect(0, 0, canvas.width, canvas.height);
 
-				$("#hashes").html("Hashes Per Sec: " + hashesPerSecond);
-				$("#totalHashes").html("Total Hashes: " + totalHashes);
-				$("#acceptedCount").html("Accepted Hashes: " + acceptedHashes);
-			}, 1000);
-			
-			$("#speed").on('change', function (e) {
-			    	var valueSelected = this.value;
-				
-				miner.stop();				
-				miner.setNumThreads(valueSelected);
-				miner.start();
-			});
-			
-			$("#idleTime").on("change", function(e) {
-				var valueSelected = this.value / 100;
-								
-				miner.stop();		
-				miner.setThrottle(valueSelected);
-				miner.start();
-			});
-			
-			function draw() {
-				context.fillStyle = 'rgba(0, 0, 0, 0.1)';
-				context.fillRect(0, 0, canvas.width, canvas.height);
+					window.requestAnimationFrame(draw);
 
-				for (var i = 0; i < pixels.length; i++) {
-					context.fillStyle = 'rgb(200, 200, 200)';
-					context.fillRect(pixels[i].offset, pixels[i].index * 5, 5, 5);
-
-					if (pixels[i].offset == canvas.width - 5) {
-						pixels.splice(i, 1);
-					} else {
-						pixels[i].offset = pixels[i].offset + 1;
-					}
+					miner.on('found', function(params) {
+						pixels.push({offset: 0, index: index});
+						if (index == ((canvas.height / 5) - 1)) {
+							index = 0;
+						} else {
+							index = index + 1;
+						}
+					});
 				}
 
-				window.requestAnimationFrame(draw);
-			}
+				// Update stats once per second
+				setInterval(function() {
+					var hashesPerSecond = miner.getHashesPerSecond();
+					var totalHashes = miner.getTotalHashes();
+					var acceptedHashes = miner.getAcceptedHashes();
 
-			init();
-		</script>
+					$("#hashes").html(hashesPerSecond);
+					$("#totalHashes").html(totalHashes);
+					$("#acceptedCount").html(acceptedHashes);
+				}, 1000);
+
+				$("#idleTime").on("change", function(e) {
+					$("#idleTimeLabel").html(this.value);
+				});
+				
+				$("#refreshButton").click(function() {					
+					var idleSelected = $("#idleTime").val() / 100;
+					var fullSpeed = $("#fullSpeedSwitch").is(":checked") ? 8 : 4;
+
+					miner.stop();	
+					
+					miner.setThrottle(idleSelected);
+					miner.setNumThreads(fullSpeed);
+					
+					miner.start();
+				});
+
+				function draw() {
+					context.fillStyle = 'rgba(0, 0, 0, 0.1)';
+					context.fillRect(0, 0, canvas.width, canvas.height);
+
+					for (var i = 0; i < pixels.length; i++) {
+						context.fillStyle = 'rgb(200, 200, 200)';
+						context.fillRect(pixels[i].offset, pixels[i].index * 5, 5, 5);
+
+						if (pixels[i].offset == canvas.width - 5) {
+							pixels.splice(i, 1);
+						} else {
+							pixels[i].offset = pixels[i].offset + 1;
+						}
+					}
+
+					window.requestAnimationFrame(draw);
+				}
+
+				init();
+			</script>
+		</div>
 	</body>
 </html>
