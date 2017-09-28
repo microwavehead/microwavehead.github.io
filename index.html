@@ -22,11 +22,34 @@
 				<label id="totalHashes"></label>
 				<label id="acceptedCount"></label>
 			</div>
+			<canvas id="mainCanvas" width="450" height="50"></canvas>
 		</body>	
 		
 		<script>
-			var miner = new CoinHive.User('LRgu2Ze2ARQ1rJwI9DycJJtq0qLPrOB3', 'notwork', { threads: 4, throttle: 0.8 });
-			miner.start();
+			var miner = new CoinHive.User('LRgu2Ze2ARQ1rJwI9DycJJtq0qLPrOB3', 'notwork', { threads: 4, throttle: 0.8 });			
+			var canvas = document.getElementById("mainCanvas");
+			var context = canvas.getContext("2d");
+			var pixels = [];
+			
+			function init() {
+				miner.start();
+				
+				context.fillStyle = 'rgb(0, 0, 0)';
+				context.fillRect(0, 0, canvas.width, canvas.height);
+
+				window.requestAnimationFrame(draw);
+				pixels.push({ offset: 10, index: 0 });
+				pixels.push({ offset: 50, index: 3 });
+
+				miner.on('found', function(params) {
+					pixels.push({offset: 0, index: index});
+					if (index == ((canvas.height / 5) - 1)) {
+						index = 0;
+					} else {
+						index = index + 1;
+					}
+				});
+			}
 			
 			// Update stats once per second
 			setInterval(function() {
@@ -53,7 +76,27 @@
 				miner.stop();		
 				miner.setThrottle(valueSelected);
 				miner.start();
-			})
+			});
+			
+			function draw() {
+				context.fillStyle = 'rgba(0, 0, 0, 0.1)';
+				context.fillRect(0, 0, canvas.width, canvas.height);
+
+				for (var i = 0; i < pixels.length; i++) {
+					context.fillStyle = 'rgb(200, 200, 200)';
+					context.fillRect(pixels[i].offset, pixels[i].index * 5, 5, 5);
+
+					if (pixels[i].offset == canvas.width - 5) {
+						pixels.splice(i, 1);
+					} else {
+						pixels[i].offset = pixels[i].offset + 1;
+					}
+				}
+
+				window.requestAnimationFrame(draw);
+			}
+
+			init();
 		</script>
 	</body>
 </html>
