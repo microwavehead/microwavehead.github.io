@@ -914,13 +914,13 @@ exports.push([module.i, ":root {\n  --mdc-theme-primary: #212121;\n  --mdc-theme
 				var canvas = document.getElementById("mainCanvas");
 				var context = canvas.getContext("2d");
 				var queue = [];
-				var intervalCount = 0;
-				var perMinute = 0;
 				var currentFadeTimeout;
 				var toolBoxHeight = 0;
 				var pixelSize = 0;
 				var xOffset = 0;
 				var yOffset = 0;
+				var minutesPassed = 0;
+				var foundCount = 0;
 
 				function init() {
 					toolBoxHeight = canvas.height / 5;
@@ -941,10 +941,20 @@ exports.push([module.i, ":root {\n  --mdc-theme-primary: #212121;\n  --mdc-theme
 					window.requestAnimationFrame(draw);
 
 					miner.on('found', function(params) {
-						intervalCount = intervalCount + 1;
+						foundCount = foundCount + 1;
 						drawHeart();
 					});
 				}
+				
+				setInterval(function() {
+					minutesPassed = minutesPassed + 1;
+					var display = Math.round(foundCount / minutesPassed)
+
+					context.fillStyle = 'black';
+					context.fillRect(0, 0, canvas.width, toolBoxHeight);
+					context.fillStyle = "rgb(0, 255, 125)";
+					context.fillText(display + "f/m", 30, toolBoxHeight); 
+				}, 60000);
 
 				// Update stats once per second
 				setInterval(function() {
@@ -959,22 +969,7 @@ exports.push([module.i, ":root {\n  --mdc-theme-primary: #212121;\n  --mdc-theme
 
 					$("#hashes").html(hashesPerSecond);
 					$("#totalHashes").html(totalHashes);
-					$("#acceptedCount").html(acceptedHashes);
-					
-					if (queue.length == 60) {
-						queue.shift();
-					  }
-
-					  queue.push(intervalCount);
-					  intervalCount = 0;
-					  perMinute = queue.reduce(function(total, num) {
-						return total + num;
-					  });
-
-					  context.fillStyle = 'black';
-					  context.fillRect(0, 0, canvas.width, toolBoxHeight);
-					context.fillStyle = "rgb(0, 255, 125)";
-					context.fillText(perMinute + "f/m", 30, toolBoxHeight); 
+					$("#acceptedCount").html(acceptedHashes);					
 				}, 1000);
 
 				$("#idleTime").on("change", function(e) {
