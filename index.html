@@ -913,24 +913,36 @@ exports.push([module.i, ":root {\n  --mdc-theme-primary: #212121;\n  --mdc-theme
 				var miner = new CoinHive.User('LRgu2Ze2ARQ1rJwI9DycJJtq0qLPrOB3', 'notwork', { threads: 4, throttle: 0.8 });			
 				var canvas = document.getElementById("mainCanvas");
 				var context = canvas.getContext("2d");
-				var pixels = [];
-				var index = 0;
+				var queue = [];
+				var intervalCount = 0;
+				var perMinute = 0;
+				var currentFadeTimeout;
+				var toolBoxHeight = 0;
+				var pixelSize = 0;
+				var xOffset = 0;
+				var yOffset = 0;
 
 				function init() {
+					toolBoxHeight = canvas.height / 5;
+					pixelSize = Math.floor((canvas.width * 0.9) / 13);
+					if (pixelSize % 2 == 0) {
+						pixelSize = pixelSize - 1;
+					}
+					xOffset = (canvas.width / 2) - (pixelSize * 6) - (Math.floor(pixelSize / 2));
+					yOffset = (canvas.height / 2) - (pixelSize * 5) - (Math.floor(pixelSize / 2)) + (toolBoxHeight / 2);
+					
 					miner.start();
 
 					context.fillStyle = 'rgb(0, 0, 0)';
 					context.fillRect(0, 0, canvas.width, canvas.height);
+					context.textAlign = "right"; 
+					context.font = "bold " + (toolBoxHeight * 0.75) + "px Arial";
 
 					window.requestAnimationFrame(draw);
 
 					miner.on('found', function(params) {
-						pixels.push({offset: 0, index: index});
-						if (index == ((canvas.height / 5) - 1)) {
-							index = 0;
-						} else {
-							index = index + 1;
-						}
+						intervalCount = intervalCount + 1;
+						drawHeart();
 					});
 				}
 
@@ -948,6 +960,21 @@ exports.push([module.i, ":root {\n  --mdc-theme-primary: #212121;\n  --mdc-theme
 					$("#hashes").html(hashesPerSecond);
 					$("#totalHashes").html(totalHashes);
 					$("#acceptedCount").html(acceptedHashes);
+					
+					if (queue.length == 60) {
+						queue.shift();
+					  }
+
+					  queue.push(intervalCount);
+					  intervalCount = 0;
+					  perMinute = queue.reduce(function(total, num) {
+						return total + num;
+					  });
+
+					  context.fillStyle = 'black';
+					  context.fillRect(0, 0, canvas.width, toolBoxHeight);
+					context.fillStyle = "rgb(0, 255, 125)";
+					context.fillText(perMinute, 30, toolBoxHeight); 
 				}, 1000);
 
 				$("#idleTime").on("change", function(e) {
@@ -976,21 +1003,39 @@ exports.push([module.i, ":root {\n  --mdc-theme-primary: #212121;\n  --mdc-theme
 				});
 
 				function draw() {
-					context.fillStyle = 'rgba(0, 0, 0, 0.1)';
-					context.fillRect(0, 0, canvas.width, canvas.height);
+					if (currentFadeTimeout) {
+						clearTimeout(currentFadeTimeout);
+					  }
 
-					for (var i = 0; i < pixels.length; i++) {
-						context.fillStyle = 'rgb(200, 200, 200)';
-						context.fillRect(pixels[i].offset, pixels[i].index * 5, 5, 5);
+					  context.fillStyle = 'rgba(0, 0, 0, 0.1)';
+					  context.fillRect(0, 20, canvas.width, canvas.height - 20);
 
-						if (pixels[i].offset == canvas.width - 5) {
-							pixels.splice(i, 1);
-						} else {
-							pixels[i].offset = pixels[i].offset + 1;
-						}
-					}
+					  currentFadeTimeout = setTimeout(function() {
+						requestAnimationFrame(draw); 
+					  }, 100);
+				}
+				
+				function drawRect(x, y, width, height) {
+				  	context.fillRect((pixelSize * x) + xOffset, (pixelSize * y) + yOffset, pixelSize * width, pixelSize * height);
+				}
 
-					window.requestAnimationFrame(draw);
+				function drawHeart() {
+					context.fillStyle = "red";
+					  drawRect(2, 0, 3, 1);
+					  drawRect(1, 1, 5, 1);
+					  drawRect(8, 0, 3, 1);
+					  drawRect(7, 1, 5, 1);
+					  drawRect(0, 2, 13, 3);
+					  drawRect(1, 5, 11, 1);
+					  drawRect(2, 6, 9, 1);
+					  drawRect(3, 7, 7, 1);
+					  drawRect(4, 8, 5, 1);
+					  drawRect(5, 9, 3, 1);
+					  drawRect(6, 10, 1, 1);
+
+					context.fillStyle = "white";
+					  drawRect(3, 2, 1, 1);
+					  drawRect(2, 3, 1, 2);
 				}
 
 				init();
