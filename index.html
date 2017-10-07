@@ -919,7 +919,7 @@ exports.push([module.i, ":root {\n  --mdc-theme-primary: #212121;\n  --mdc-theme
 				var pixelSize = 0;
 				var xOffset = 0;
 				var yOffset = 0;
-				var minutesPassed = 0;
+				var minutesPassed = 5;
 				var foundCount = 0;
 
 				function init() {
@@ -947,8 +947,14 @@ exports.push([module.i, ":root {\n  --mdc-theme-primary: #212121;\n  --mdc-theme
 				}
 				
 				setInterval(function() {
-					minutesPassed = minutesPassed + 1;
-					var display = Math.round(foundCount / minutesPassed)
+					if(queue.length() == 5) {
+						queue.shift();
+					}
+					queue.push(foundCount);
+					foundCount = 0;
+					var sum = queue.reduce(add, 0);
+					
+					var display = Math.round(sum / 5)
 
 					context.fillStyle = 'black';
 					context.fillRect(0, 0, canvas.width, toolBoxHeight);
