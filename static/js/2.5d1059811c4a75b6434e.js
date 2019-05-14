@@ -1,0 +1,2 @@
+webpackJsonp([2],{"1mE3":function(e,t){},nEXT:function(e,t,n){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var s={render:function(){var e=this.$createElement,t=this._self._c||e;return t("div",{staticClass:"news-feed"},this._l(this.newsItems,function(e){return t("NewsItem",{key:e.id,attrs:{newsItem:e}})}),1)},staticRenderFns:[]};var r=n("VU/8")({computed:{newsItems:function(){return this.$store.state.newsItems}}},s,!1,function(e){n("1mE3")},null,null);t.default=r.exports}});
+//# sourceMappingURL=2.5d1059811c4a75b6434e.js.map
